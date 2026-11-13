@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOX SOCIAL INTEL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000;
+    --fg:#33ff66;
+    --dim:#1c7a37;
+    --line:#155c2a;
+    --err:#ff5f5f;
+    --warn:#ffcc00;
+    --link:#7dff9e;
+    --font:'VT323','Amiri','Courier New',monospace;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{min-height:100%;margin:0;background:var(--bg);}
+
+  body{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    min-height:100vh;
+    padding:22px 12px;
+    color:var(--fg);
+    font-family:var(--font);
+    font-size:22px;
+    line-height:1.65;
+    color-scheme:dark;
+    -webkit-text-size-adjust:100%;
+  }
+
+  ::selection{background:var(--fg);color:#000;}
+
+  .ltr{
+    direction:ltr;
+    text-align:left;
+    letter-spacing:1px;
+    font-family:'VT323',monospace;
+  }
+
+  /* ---------- النافذة ---------- */
+  .crt{
+    width:100%;
+    max-width:640px;
+    margin:auto;
+    background:var(--bg);
+    border:1px solid var(--line);
+    box-shadow:0 0 18px rgba(51,255,102,.10);
+  }
+
+  .titlebar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:3px 10px;
+    background:#08170c;
+    border-bottom:1px solid var(--line);
+    color:var(--dim);
+    font-family:'VT323',monospace;
+    font-size:17px;
+    letter-spacing:2px;
+    white-space:nowrap;
+    direction:ltr;
+  }
+
+  .body{padding:16px;}
+
+  .brand{
+    color:var(--fg);
+    font-family:'VT323',monospace;
+    font-size:23px;
+    letter-spacing:2px;
+    direction:ltr;
+    text-align:left;
+    word-break:break-word;
+  }
+
+  hr{
+    border:0;
+    border-top:1px solid var(--line);
+    margin:12px 0 14px;
+  }
+
+  /* ---------- الحقول ---------- */
+  .field{margin-bottom:12px;}
+
+  label{
+    display:block;
+    margin-bottom:4px;
+    color:var(--dim);
+    font-size:19px;
+    font-family:var(--font);
+  }
+
+  select,
+  input[type="text"]{
+    width:100%;
+    padding:6px 9px;
+    border:1px solid var(--line);
+    border-radius:0;
+    background:#000;
+    color:var(--fg);
+    font-family:var(--font);
+    font-size:20px;
+    outline:none;
+  }
+  select option{background:#000;color:var(--fg);}
+
+  select:focus,
+  input[type="text"]:focus{
+    border-color:var(--fg);
+  }
+
+  input[type="text"]::placeholder{color:var(--dim);opacity:1;}
+
+  .actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:14px;
+  }
+
+  .btn{
+    padding:5px 18px;
+    border:1px solid var(--fg);
+    border-radius:0;
+    background:#000;
+    color:var(--fg);
+    font-family:var(--font);
+    font-size:20px;
+    cursor:pointer;
+  }
+  .btn:hover{background:var(--fg);color:#000;}
+  .btn:focus-visible{outline:1px dashed var(--fg);outline-offset:2px;}
+
+  /* ---------- شاشة المخرجات ---------- */
+  .out{
+    margin-top:16px;
+    padding:9px 11px;
+    min-height:150px;
+    max-height:290px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    border:1px solid var(--line);
+    background:#000;
+    font-size:19px;
+    word-break:break-word;
+  }
+  .out::-webkit-scrollbar{width:8px;}
+  .out::-webkit-scrollbar-track{background:#000;}
+  .out::-webkit-scrollbar-thumb{background:var(--line);}
+
+  .line{
+    white-space:pre-wrap;
+    word-break:break-all;
+    unicode-bidi:plaintext;
+    text-align:start;
+  }
+  .line a{color:inherit;text-decoration:underline;}
+
+  .ok{color:var(--fg);}
+  .dim{color:var(--dim);}
+  .err{color:var(--err);}
+  .warn{color:var(--warn);}
+  .link{color:var(--link);}
+
+  /* ---------- السجل ---------- */
+  .hist-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:16px;
+    color:var(--dim);
+    font-size:19px;
+  }
+
+  .mini{
+    padding:0 8px;
+    border:1px solid var(--line);
+    background:#000;
+    color:var(--dim);
+    font-family:var(--font);
+    font-size:17px;
+    cursor:pointer;
+  }
+  .mini:hover{border-color:var(--fg);color:var(--fg);}
+
+  .hist{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+    margin-top:4px;
+    font-size:18px;
+  }
+
+  .hist button{
+    padding:1px 0;
+    border:0;
+    background:none;
+    color:var(--dim);
+    font-family:var(--font);
+    font-size:18px;
+    text-align:start;
+    cursor:pointer;
+    word-break:break-all;
+    unicode-bidi:plaintext;
+  }
+  .hist button:hover{color:var(--fg);text-decoration:underline;}
+
+  /* ---------- الحقوق ---------- */
+  .credits{
+    margin-top:14px;
+    color:var(--dim);
+    font-size:16px;
+    line-height:1.7;
+  }
+  .credits a{color:var(--dim);text-decoration:none;}
+  .credits a:hover{color:var(--fg);text-decoration:underline;}
+
+  /* ---------- الجوال ---------- */
+  @media (max-width:480px){
+    body{padding:10px 8px;font-size:20px;}
+    .body{padding:12px;}
+    .brand{font-size:20px;}
+    .actions{flex-direction:column;}
+    .btn{width:100%;text-align:center;}
+    .out{max-height:240px;font-size:18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="crt">
+
+  <div class="titlebar">
+    <span>NOX SOCIAL INTEL</span>
+    <span>[ - ][ o ][ x ]</span>
+  </div>
+
+  <div class="body">
+
+    <div class="brand">C:\OSINT&gt; NOX_SOCIAL_INTEL.EXE</div>
+
+    <hr>
+
+    <div class="field">
+      <label for="platform">[?] المنصة</label>
+      <select id="platform">
+        <option value="instagram">إنستغرام</option>
+        <option value="tiktok">تيك توك</option>
+        <option value="telegram">تيليجرام</option>
+        <option value="snapchat">سناب شات</option>
+        <option value="discord">ديسكورد</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="username">[?] اسم المستخدم</label>
+      <input id="username" type="text" placeholder="@اسم_المستخدم" maxlength="64"
+             autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+    </div>
+
+    <div class="actions">
+      <button id="exec" class="btn" type="button">[ تنفيذ ]</button>
+      <button id="copy" class="btn" type="button">[ نسخ ]</button>
+    </div>
+
+    <div class="out" id="out" aria-live="polite"></div>
+
+    <div class="hist-head">
+      <span>[ آخر البحث ]</span>
+      <button id="clear" class="mini" type="button">مسح</button>
+    </div>
+    <div class="hist" id="hist"></div>
+
+    <hr>
+
+    <div class="credits">
+      <div class="ltr">telegram | <a href="https://t.me/Grh_shr7" target="_blank" rel="noopener">https://t.me/Grh_shr7</a></div>
+      <div class="ltr">tiktok&nbsp;&nbsp;&nbsp;| nox_dev</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================
+     خريطة المنصات — أنماط روابط الملفات العامة فقط
+     ================================================================ */
+  var PLATFORMS = {
+    instagram: { label: 'إنستغرام', url: function (u) { return 'https://www.instagram.com/' + u + '/'; } },
+    tiktok:    { label: 'تيك توك',   url: function (u) { return 'https://www.tiktok.com/@' + u; } },
+    telegram:  { label: 'تيليجرام',  url: function (u) { return 'https://t.me/' + u; } },
+    snapchat:  { label: 'سناب شات',  url: function (u) { return 'https://www.snapchat.com/add/' + u; } },
+    discord:   { label: 'ديسكورد',   url: function (u) {
+                   return /^\d{17,20}$/.test(u) ? 'https://discord.com/users/' + u : null;
+                 } }
+  };
+
+  var USERNAME_RE = /^[A-Za-z0-9._-]{1,64}$/;
+  var HKEY = 'nox_social_intel_history_v1';
+
+  /* ================================================================
+     عناصر الصفحة
+     ================================================================ */
+  var platformEl = document.getElementById('platform');
+  var usernameEl = document.getElementById('username');
+  var execBtn    = document.getElementById('exec');
+  var copyBtn    = document.getElementById('copy');
+  var clearBtn   = document.getElementById('clear');
+  var outEl      = document.getElementById('out');
+  var histEl     = document.getElementById('hist');
+
+  var lastUrl = '';
+  var seqTimer = null;
+
+  /* ================================================================
+     أدوات مساعدة
+     ================================================================ */
+  function stripTags(s) {
+    return String(s)
+      .replace(/<[^>]*>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#0?39;/g, "'");
+  }
+  function decodeEntities(s) {
+    var t = document.createElement('textarea');
+    t.innerHTML = s;
+    return t.value;
+  }
+
+  /* ================================================================
+     مخرجات الطرفية
+     ================================================================ */
+  function clearOut() { outEl.innerHTML = ''; }
+
+  function line(text, cls, href) {
+    var d = document.createElement('div');
+    d.className = 'line' + (cls ? ' ' + cls : '');
+    if (href) {
+      var a = document.createElement('a');
+      a.href = href;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.textContent = text;
+      d.appendChild(a);
+    } else {
+      d.textContent = text;
+    }
+    outEl.appendChild(d);
+    outEl.scrollTop = outEl.scrollHeight;
+    return d;
+  }
+
+  function playSequence(items) {
+    clearTimeout(seqTimer);
+    var i = 0;
+    (function step() {
+      if (i >= items.length) return;
+      var it = items[i++];
+      line(it.t, it.cls, it.href);
+      seqTimer = setTimeout(step, it.delay || 130);
+    })();
+  }
+
+  /* ================================================================
+     جلب المعلومات العامة (عبر وسيط CORS مجاني)
+     ================================================================ */
+  var PROXIES = [
+    function (u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u); },
+    function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); }
+  ];
+
+  async function tryFetch(url) {
+    for (var i = 0; i < PROXIES.length; i++) {
+      try {
+        var ctrl = new AbortController();
+        var tid = setTimeout(function () { ctrl.abort(); }, 12000);
+        var r = await fetch(PROXIES[i](url), { signal: ctrl.signal });
+        clearTimeout(tid);
+        if (r.ok) {
+          var txt = await r.text();
+          if (txt && txt.length > 80) return txt;
+        }
+      } catch (e) { /* جرب الوسيط التالي */ }
+    }
+    return null;
+  }
+
+  function parseTelegram(html) {
+    if (!html) return { error: 'تعذر الاتصال' };
+    var t = html.match(/<div class="tgme_page_title"[^>]*>([\s\S]*?)<\/div>/);
+    var e = html.match(/<div class="tgme_page_extra"[^>]*>([\s\S]*?)<\/div>/);
+    var b = html.match(/<div class="tgme_page_description[^"]*"[^>]*>([\s\S]*?)<\/div>/);
+    var name  = t ? stripTags(t[1]).trim() : '';
+    var extra = e ? stripTags(e[1]).trim() : '';
+    var bio   = b ? stripTags(b[1]).replace(/\s+/g, ' ').trim() : '';
+    if (!name || name === 'Telegram' || name === 'Preview channel' || name === 'Preview') {
+      return { exists: false };
+    }
+    return { exists: true, name: name, extra: extra, bio: bio };
+  }
+
+  function parseInstagram(html) {
+    if (!html) return { error: 'تعذر الاتصال' };
+    if (/Page Not Found|isn't available|Sorry, this page/i.test(html)) return { exists: false };
+    var d = html.match(/<meta property="og:description" content="([^"]*)"/);
+    var t = html.match(/<meta property="og:title" content="([^"]*)"/);
+    if (!d && !t) return { error: 'لا توجد بيانات' };
+    var desc  = d ? decodeEntities(d[1]) : '';
+    var title = t ? decodeEntities(t[1]) : '';
+    if (/log in|sign up/i.test(desc) && !/followers/i.test(desc)) {
+      return { error: 'الحساب مقفل أو يتطلب تسجيل دخول' };
+    }
+    var name = title.replace(/\(@[^)]+\)/g, '').replace(/•.*/, '').trim();
+    var stats = null;
+    var m = desc.match(/([\d.,]+[KMB]?)\s*Followers?.*?([\d.,]+[KMB]?)\s*Following.*?([\d.,]+[KMB]?)\s*Posts?/i);
+    if (m) stats = { followers: m[1], following: m[2], posts: m[3] };
+    return { exists: true, name: name, bio: (desc.split(' - ')[0] || ''), stats: stats };
+  }
+
+  function parseTikTok(html) {
+    if (!html) return { error: 'تعذر الاتصال' };
+    if (/Couldn.t find this account|Couldn’t find this account/i.test(html)) return { exists: false };
+    var d = html.match(/<meta property="og:description" content="([^"]*)"/);
+    var t = html.match(/<meta property="og:title" content="([^"]*)"/);
+    if (!d && !t) return { error: 'لا توجد بيانات' };
+    var desc  = d ? decodeEntities(d[1]) : '';
+    var title = t ? decodeEntities(t[1]) : '';
+    var name = title.replace(/\(@[^)]+\)/g, '').replace(/on TikTok.*/i, '').trim();
+    var stats = null;
+    var m = desc.match(/([\d.,]+[KMB]?)\s*Followers?.*?([\d.,]+[KMB]?)\s*Following.*?([\d.,]+[KMB]?)\s*Likes?/i);
+    if (m) stats = { followers: m[1], following: m[2], likes: m[3] };
+    return { exists: true, name: name, bio: (desc.split(' - ')[0] || ''), stats: stats };
+  }
+
+  function parseSnapchat(html) {
+    if (!html) return { error: 'تعذر الاتصال' };
+    var t = html.match(/<meta property="og:title" content="([^"]*)"/);
+    var d = html.match(/<meta property="og:description" content="([^"]*)"/);
+    if (!t && !d) return { error: 'لا توجد بيانات' };
+    var title = t ? decodeEntities(t[1]) : '';
+    var desc  = d ? decodeEntities(d[1]) : '';
+    if (/not found|doesn.t exist/i.test(title + desc)) return { exists: false };
+    return { exists: true, name: title, bio: desc };
+  }
+
+  async function gatherInfo(platform, user) {
+    if (platform === 'discord') return { error: 'ديسكورد لا يوفر معلومات عامة' };
+    var url = PLATFORMS[platform].url(user);
+    if (!url) return { error: 'رابط غير متاح' };
+    var html = await tryFetch(url);
+    if (html === null) return { error: 'تعذر الاتصال بالخادم' };
+    if (platform === 'telegram') return parseTelegram(html);
+    if (platform === 'instagram') return parseInstagram(html);
+    if (platform === 'tiktok') return parseTikTok(html);
+    if (platform === 'snapchat') return parseSnapchat(html);
+    return { error: 'منصة غير مدعومة' };
+  }
+
+  /* ================================================================
+     عرض النتائج
+     ================================================================ */
+  function showInfo(info) {
+    if (!info) { line('[!] تعذر جلب المعلومات', 'warn'); line('[+] اكتمل البحث', 'ok'); return; }
+    if (info.error) {
+      line('[!] تعذر جلب المعلومات: ' + info.error, 'warn');
+      line('[+] اكتمل البحث', 'ok');
+      return;
+    }
+    if (info.exists === false) {
+      line('[!] الحساب غير موجود أو غير متاح', 'err');
+      line('[+] اكتمل البحث', 'ok');
+      return;
+    }
+    line('[+] تم جلب المعلومات العامة:', 'ok');
+    if (info.name)  line('    الاسم: ' + info.name, 'link');
+    if (info.extra) line('    ' + info.extra, 'link');
+    if (info.bio)   line('    البايو: ' + info.bio, 'link');
+    if (info.stats) {
+      if (info.stats.followers) line('    المتابعون: ' + info.stats.followers, 'link');
+      if (info.stats.following) line('    يتابع: ' + info.stats.following, 'link');
+      if (info.stats.posts)     line('    المنشورات: ' + info.stats.posts, 'link');
+      if (info.stats.likes)     line('    الإعجابات: ' + info.stats.likes, 'link');
+    }
+    line('[+] اكتمل البحث', 'ok');
+  }
+
+  /* ================================================================
+     التنفيذ
+     ================================================================ */
+  function execute() {
+    var key = platformEl.value;
+    var platform = PLATFORMS[key];
+    var user = usernameEl.value.replace(/^\s+/, '').replace(/\s+$/, '').replace(/^@+/, '').replace(/\s+$/, '');
+
+    clearOut();
+
+    if (!user) {
+      line('[!] خطأ: اسم المستخدم فارغ', 'err');
+      usernameEl.focus();
+      return;
+    }
+    if (!USERNAME_RE.test(user)) {
+      line('[!] خطأ: صيغة غير صحيحة', 'err');
+      line('[i] الأحرف: A-Z 0-9 . _ -', 'dim');
+      usernameEl.focus();
+      return;
+    }
+
+    var url = platform.url(user);
+
+    if (!url) {
+      line('[+] جاري التهيئة...', 'dim');
+      line('[+] المنصة: ' + platform.label, 'dim');
+      line('[!] ديسكورد يتطلب معرّفاً رقمياً (17-20 رقماً)', 'err');
+      line('[i] مثال: 123456789012345678', 'dim');
+      return;
+    }
+
+    lastUrl = url;
+
+    // فتح الرابط فوراً (قبل أي عملية جلب)
+    var win = window.open(url, '_blank');
+    if (win) { try { win.opener = null; } catch (e) {} }
+
+    // سجل البحث
+    addHistory({ platform: key, username: user, url: url, ts: Date.now() });
+
+    // رسائل الطرفية
+    playSequence([
+      { t: '[+] جاري التهيئة...' },
+      { t: '[+] المنصة: ' + platform.label },
+      { t: '[+] اليوزر: @' + user },
+      { t: '[+] الرابط: ' + url, href: url, cls: 'link' },
+      { t: '[+] جلب المعلومات العامة...', cls: 'dim' }
+    ]);
+
+    // جلب المعلومات الفعلية
+    gatherInfo(key, user).then(showInfo).catch(function (e) {
+      line('[!] تعذر جلب المعلومات: ' + (e && e.message ? e.message : 'خطأ'), 'warn');
+      line('[+] اكتمل البحث', 'ok');
+    });
+  }
+
+  /* ================================================================
+     النسخ
+     ================================================================ */
+  function fallbackCopy() {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = lastUrl;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  function copyLink() {
+    if (!lastUrl) { line('[!] لا يوجد رابط', 'err'); return; }
+    function done(ok) {
+      line(ok ? '[+] تم النسخ' : '[!] فشل النسخ', ok ? 'ok' : 'err');
+      line('    ' + lastUrl, 'dim');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(lastUrl).then(function () { done(true); })
+        .catch(function () { done(fallbackCopy()); });
+    } else {
+      done(fallbackCopy());
+    }
+  }
+
+  /* ================================================================
+     السجل المحلي
+     ================================================================ */
+  function getHistory() {
+    try {
+      var raw = localStorage.getItem(HKEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function setHistory(arr) {
+    try { localStorage.setItem(HKEY, JSON.stringify(arr)); } catch (e) {}
+  }
+  function addHistory(entry) {
+    var h = getHistory().filter(function (x) {
+      return !(x && x.platform === entry.platform && x.username === entry.username);
+    });
+    h.unshift(entry);
+    setHistory(h.slice(0, 8));
+    renderHistory();
+  }
+  function renderHistory() {
+    histEl.innerHTML = '';
+    var h = getHistory();
+    if (!h.length) {
+      var empty = document.createElement('div');
+      empty.className = 'dim';
+      empty.textContent = '(فارغ)';
+      histEl.appendChild(empty);
+      return;
+    }
+    h.forEach(function (item) {
+      if (!item || !item.username) return;
+      var label = PLATFORMS[item.platform] ? PLATFORMS[item.platform].label : String(item.platform).toUpperCase();
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = '> ' + label + ' : @' + item.username;
+      b.title = item.url || '';
+      b.addEventListener('click', function () {
+        if (PLATFORMS[item.platform]) platformEl.value = item.platform;
+        usernameEl.value = item.username;
+        usernameEl.focus();
+      });
+      histEl.appendChild(b);
+    });
+  }
+
+  /* ================================================================
+     الأحداث
+     ================================================================ */
+  execBtn.addEventListener('click', execute);
+  copyBtn.addEventListener('click', copyLink);
+  usernameEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); execute(); }
+  });
+  clearBtn.addEventListener('click', function () {
+    setHistory([]);
+    renderHistory();
+    line('[+] تم مسح السجل', 'dim');
+  });
+
+  /* ================================================================
+     بدء التشغيل
+     ================================================================ */
+  renderHistory();
+  line('NOX SOCIAL INTEL v1.0', 'ok');
+  line('[i] اختر منصة، اكتب الاسم، ثم [ تنفيذ ]', 'dim');
+  line('[i] الرابط يفتح + تُجلب المعلومات العامة', 'dim');
+
+  usernameEl.focus();
+})();
+</script>
+
+</body>
+</html>
